@@ -1,7 +1,10 @@
 package menu
 
-import "github.com/xxvlrapss/go_restorant_app.git/internal/model"
+import (
+	"github.com/xxvlrapss/go_restorant_app.git/internal/model"
+)
 
 type Repository interface {
-	GetMenu(menuType string) ([]model.MenuItem, error)
+	GetMenuList(menuType string) ([]model.MenuItem, error)
+	GetMenu(orderCode string) (model.MenuItem, error)
 }

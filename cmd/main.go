@@ -1,11 +1,12 @@
 package main
 
 import (
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 
 	"github.com/xxvlrapss/go_restorant_app.git/internal/database"
 	"github.com/xxvlrapss/go_restorant_app.git/internal/delivery/rest"
 	mRepo "github.com/xxvlrapss/go_restorant_app.git/internal/repository/menu"
+	oRepo "github.com/xxvlrapss/go_restorant_app.git/internal/repository/order"
 	rUsecase "github.com/xxvlrapss/go_restorant_app.git/internal/usecase/resto"
 )
 
@@ -19,9 +20,10 @@ func main() {
 	db := database.GetDB(dbAddress)
 
 	menuRepo := mRepo.GetRepository(db)
+	orderRepo := oRepo.GetRepository(db)
 
-	restoUsecase := rUsecase.GetUsecase(menuRepo)
-
+	restoUsecase := rUsecase.GetUsecase(menuRepo, orderRepo)
+	
 	h := rest.NewHandler(restoUsecase)
 
 	rest.LoadRoutes(e, h)

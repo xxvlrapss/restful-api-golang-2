@@ -4,13 +4,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/labstack/echo"
+	"github.com/labstack/echo/v4"
 )
 
-func (h *handler) GetMenu(c echo.Context) error {
+func (h *handler) GetMenuList(c echo.Context) error {
 	menuType := c.FormValue("menu_type")
 
-	menuData, err := h.restoUsecase.GetMenu(menuType)
+	menuData, err := h.restoUsecase.GetMenuList(menuType)
 	if err != nil {
 		fmt.Print("got error %\n", err.Error())
 
