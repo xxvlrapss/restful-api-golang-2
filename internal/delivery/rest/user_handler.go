@@ -2,27 +2,35 @@ package rest
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"github.com/xxvlrapss/go_restorant_app.git/internal/model"
+	"github.com/xxvlrapss/go_restorant_app.git/internal/tracing"
 )
 
 func (h *handler) RegisterUser(c echo.Context) error {
+	ctx, span := tracing.CreateSpan(c.Request().Context(), "RegisterUser")
+	defer span.End()
+
 	var request model.RegisterRequest
 	err := json.NewDecoder(c.Request().Body).Decode(&request)
 	if err != nil {
-		fmt.Printf("got error %s\n", err.Error())
+		logrus.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("[delivery][rest][user_handler][RegisterUser] unable to decode request")
 
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 
-	userData, err := h.restoUsecase.RegisterUser(request)
+	userData, err := h.restoUsecase.RegisterUser(ctx, request)
 	if err != nil {
-		fmt.Printf("got error %s\n", err.Error())
+		logrus.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("[delivery][rest][user_handler][RegisterUser] unable to register user")
 
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
@@ -35,21 +43,28 @@ func (h *handler) RegisterUser(c echo.Context) error {
 }
 
 func (h *handler) Login(c echo.Context) error {
+	ctx, span := tracing.CreateSpan(c.Request().Context(), "Login")
+	defer span.End()
+
 	var request model.LoginRequest
 	err := json.NewDecoder(c.Request().Body).Decode(&request)
 	if err != nil {
-		fmt.Printf("got error %s\n", err.Error())
+		logrus.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("[delivery][rest][user_handler][Login] unable to decode request")
 
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusOK, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}
 
-	sessionData, err := h.restoUsecase.Login(request)
+	sessionData, err := h.restoUsecase.Login(ctx, request)
 	if err != nil {
-		fmt.Printf("got error %s\n", err.Error())
+		logrus.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("[delivery][rest][user_handler][Login] unable to login user")
 
-		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
+		return c.JSON(http.StatusOK, map[string]interface{}{
 			"error": err.Error(),
 		})
 	}

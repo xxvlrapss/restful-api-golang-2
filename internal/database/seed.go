@@ -45,6 +45,12 @@ func seedDB(db *gorm.DB) {
 			Price:     15000,
 			Type:      constant.MenuTypeDrink,
 		},
+		{
+			Name:      "Jus apel",
+			OrderCode: "jus_apel",
+			Price:     15000,
+			Type:      constant.MenuTypeDrink,
+		},
 	}
 
 	if err := db.First(&model.MenuItem{}).Error; err == gorm.ErrRecordNotFound {

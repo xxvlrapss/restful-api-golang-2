@@ -9,13 +9,19 @@ import (
 
 	"github.com/xxvlrapss/go_restorant_app.git/internal/database"
 	"github.com/xxvlrapss/go_restorant_app.git/internal/delivery/rest"
+	"github.com/xxvlrapss/go_restorant_app.git/internal/logger"
 	mRepo "github.com/xxvlrapss/go_restorant_app.git/internal/repository/menu"
 	oRepo "github.com/xxvlrapss/go_restorant_app.git/internal/repository/order"
 	uRepo "github.com/xxvlrapss/go_restorant_app.git/internal/repository/user"
+	"github.com/xxvlrapss/go_restorant_app.git/internal/tracing"
 	rUsecase "github.com/xxvlrapss/go_restorant_app.git/internal/usecase/resto"
 )
 
 func main() {
+	logger.Init()
+	tracing.Init("http://localhost:14268/api/traces")
+
+
 	e := echo.New()
 
 	db := database.GetDB("host=localhost port=5432 user=postgres password=leon123 dbname=go_resto_app sslmode=disable")
@@ -27,7 +33,7 @@ func main() {
 
 	menuRepo := mRepo.GetRepository(db)
 	orderRepo := oRepo.GetRepository(db)
-	userRepo, err := uRepo.GetRepository(db, secret, 1, 64*1024, 4, 32, signKey, 60*time.Second)
+	userRepo, err := uRepo.GetRepository(db, secret, 1, 64*1024, 4, 32, signKey, 120*time.Second)
 	if err != nil {
 		panic(err)
 	}

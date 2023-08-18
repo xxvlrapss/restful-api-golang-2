@@ -6,7 +6,7 @@ import "github.com/xxvlrapss/go_restorant_app.git/internal/model/constant"
 type Order struct {
 	// just note, gorm uses ID field as primary key by default
 	ID            string               `gorm:"primaryKey" json:"id"`
-	UserID        string               `gorm:"index" json:"user_id"`
+	UserID       string 							  `json:"user_id"`
 	Status        constant.OrderStatus `json:"status"`
 	ProductOrders []ProductOrder       `json:"product_orders"`
 	ReferenceID   string               `gorm:"unique" json:"reference_id"`
@@ -33,6 +33,6 @@ type OrderMenuRequest struct {
 }
 
 type GetOrderInfoRequest struct {
-	OrderID string
-	UserID  string
+	UserID        string                    `json:"-"`
+	OrderID string `json:"order_id"`
 }
