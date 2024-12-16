@@ -1,14 +1,22 @@
 package database
 
 import (
+	"fmt"
+
 	"github.com/xxvlrapss/go_restorant_app.git/internal/model"
 	"github.com/xxvlrapss/go_restorant_app.git/internal/model/constant"
 	"gorm.io/gorm"
 )
 
-func seedDB(db * gorm.DB) {
-		// Migrate the schema
-		db.AutoMigrate(&model.MenuItem{}, &model.Order{}, &model.ProductOrder{})
+func seedDB(db *gorm.DB) {
+
+	// Migrate the schema
+	db.AutoMigrate(
+		&model.MenuItem{},
+		&model.Order{},
+		&model.ProductOrder{},
+		&model.User{},
+	)
 
 	foodMenu := []model.MenuItem{
 		{
@@ -37,12 +45,16 @@ func seedDB(db * gorm.DB) {
 			Price:     15000,
 			Type:      constant.MenuTypeDrink,
 		},
+		{
+			Name:      "Jus apel",
+			OrderCode: "jus_apel",
+			Price:     15000,
+			Type:      constant.MenuTypeDrink,
+		},
 	}
 
-
-	// db.AutoMigrate(&model.MenuItem{})
 	if err := db.First(&model.MenuItem{}).Error; err == gorm.ErrRecordNotFound {
-
+		fmt.Println("Seeding db data...")
 		db.Create(&foodMenu)
 		db.Create(&drinksMenu)
 	}

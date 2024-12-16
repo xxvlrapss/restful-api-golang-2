@@ -1,18 +1,24 @@
 package rest
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
+	"github.com/xxvlrapss/go_restorant_app.git/internal/tracing"
 )
 
-func (h *handler) GetMenuList(c echo.Context) error {
+func (h *handler) GetMenu(c echo.Context) error {
+	ctx, span := tracing.CreateSpan(c.Request().Context(), "GetMenu")
+	defer span.End()
+
 	menuType := c.FormValue("menu_type")
 
-	menuData, err := h.restoUsecase.GetMenuList(menuType)
+	menuData, err := h.restoUsecase.GetMenuList(ctx, menuType)
 	if err != nil {
-		fmt.Print("got error %\n", err.Error())
+		logrus.WithFields(logrus.Fields{
+			"err": err,
+		}).Error("[delivery][rest][menu_handler][GetMenu] unable to get menu list")
 
 		return c.JSON(http.StatusInternalServerError, map[string]interface{}{
 			"error": err.Error(),
